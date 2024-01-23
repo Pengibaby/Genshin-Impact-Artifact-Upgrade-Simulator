@@ -45,9 +45,12 @@ public class CircletPiece extends Artifacts {
 			this.MainStatValues = this.HealingMainStat;
 		}
 		
-		//Sets the 4 substats
+		// Generate random number either 3 or 4
+		int ThreeOrFour = 3 + (int)(Math.random() * 2);
+		
+		//Sets the 3 or 4 substats
 		int numberOfSubstats = 0;
-		while(numberOfSubstats != 4) {
+		while(numberOfSubstats != ThreeOrFour) {
 			//get substat name
 			String name = getRandomSubstatName();
 			//If the substat name is not the same as the main stat, proceed.
@@ -97,15 +100,49 @@ public class CircletPiece extends Artifacts {
 		//increment level up counter by 1
 		this.numberOfLevelUps++;
 		
-		//Get the substat name and current value.
-		String substatName = this.substatNames[index];
-		double substatValue = this.substatValues[index];
-		
-		//Set the new substat value but adding the upgrade value to the substat
-		substatValue = Math.round((substatValue + getSubstatValue(substatName)) * 10) / 10.0;
-		
-		//Replace the value in the list with the updated value
-		this.substatValues[index] = substatValue;
+		//If there are 4 substats already, upgrade one of them.
+		if(this.substatNames[3] != null) {
+			//Get the substat name and current value.
+			String substatName = this.substatNames[index];
+			double substatValue = this.substatValues[index];
+			
+			//Set the new substat value but adding the upgrade value to the substat
+			substatValue = Math.round((substatValue + getSubstatValue(substatName)) * 10) / 10.0;
+			
+			//Replace the value in the list with the updated value
+			this.substatValues[index] = substatValue;
+		//else, there is only 3 substats, in which case, add another sub stat.
+		} else {
+			boolean substatAdded = false;
+			while(!substatAdded) {
+				//get substat name
+				String name = getRandomSubstatName();
+				//If the substat name is not the same as the main stat, proceed.
+				if(name.compareTo(this.MainStatName) != 0) {
+					boolean alreadyPresent = false;
+					for(int i = 0; i < this.substatNames.length; i++) {
+						if(this.substatNames[i] == null) {
+							break;
+						} else {
+							if(this.substatNames[i].compareTo(name) == 0) {
+								alreadyPresent = true;
+								break;
+							}
+						}
+					}
+					
+					//If the substats is not in the list already, add it to the list and add the value to this list
+					if(!alreadyPresent) {
+						//Add the subustat to the array, get the value of the substat and add that to the array too.
+						this.substatNames[3] = name;
+						double value = getSubstatValue(name);
+						this.substatValues[3] = value;
+						
+						substatAdded = true;
+					}
+				}
+			}
+		}
 	}
 	
 	/**

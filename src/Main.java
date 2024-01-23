@@ -1,5 +1,5 @@
 
-public class Main {
+//public class Main {
 
 //	public static void main(String args[]) {
 
@@ -114,4 +114,4 @@ public class Main {
 //		System.out.println(Math.round((temp.getSubstatValues()[index] - original) * 10) / 10.0);
 //		temp.printInfo();
 //	}
-}
+//}

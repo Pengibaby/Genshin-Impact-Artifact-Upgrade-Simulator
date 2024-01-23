@@ -212,10 +212,12 @@ public class MainWindow {
 				currentSandPiece = null;
 				currentGobletPiece = null;
 				currentCircletPiece = null;
-				//Reset substat upgraded by how much labels
+				//Reset substat upgraded by how much labels and all substst labels too
 				for(int i = 0; i < substatUpgradedByList.length; i++) {
 					substatUpgradedByList[i].setText("");
 					substatUpgradedByList[i].setVisible(false);
+					substatNameLabelList[i].setText("?");
+					substatValueLabelList[i].setText("?");
 				}
 				
 				//generated a random integer between 0 and 4 both inclusive
@@ -230,8 +232,10 @@ public class MainWindow {
 					mainStatNameLabel.setText(currentFlowerPiece.getMainStatName());
 					mainStatValueLabel.setText(String.valueOf(currentFlowerPiece.getMainStatValue()));
 					for(int i = 0; i < 4; i++) {
-						substatNameLabelList[i].setText(currentFlowerPiece.getSubstatNames()[i]);
-						substatValueLabelList[i].setText(String.valueOf(currentFlowerPiece.getSubstatValues()[i]));
+						if(currentFlowerPiece.getSubstatNames()[i] != null) {
+							substatNameLabelList[i].setText(currentFlowerPiece.getSubstatNames()[i]);
+							substatValueLabelList[i].setText(String.valueOf(currentFlowerPiece.getSubstatValues()[i]));
+						}
 					}
 				} else if(randomInteger == 1) {
 					//Feather
@@ -241,8 +245,10 @@ public class MainWindow {
 					mainStatNameLabel.setText(currentFeatherPiece.getMainStatName());
 					mainStatValueLabel.setText(String.valueOf(currentFeatherPiece.getMainStatValue()));
 					for(int i = 0; i < 4; i++) {
-						substatNameLabelList[i].setText(currentFeatherPiece.getSubstatNames()[i]);
-						substatValueLabelList[i].setText(String.valueOf(currentFeatherPiece.getSubstatValues()[i]));
+						if(currentFeatherPiece.getSubstatNames()[i] != null) {
+							substatNameLabelList[i].setText(currentFeatherPiece.getSubstatNames()[i]);
+							substatValueLabelList[i].setText(String.valueOf(currentFeatherPiece.getSubstatValues()[i]));
+						}
 					}
 				} else if(randomInteger == 2) {
 					//Sands
@@ -252,8 +258,10 @@ public class MainWindow {
 					mainStatNameLabel.setText(currentSandPiece.getMainStatName());
 					mainStatValueLabel.setText(String.valueOf(currentSandPiece.getMainStatValue()));
 					for(int i = 0; i < 4; i++) {
-						substatNameLabelList[i].setText(currentSandPiece.getSubstatNames()[i]);
-						substatValueLabelList[i].setText(String.valueOf(currentSandPiece.getSubstatValues()[i]));
+						if(currentSandPiece.getSubstatNames()[i] != null) {
+							substatNameLabelList[i].setText(currentSandPiece.getSubstatNames()[i]);
+							substatValueLabelList[i].setText(String.valueOf(currentSandPiece.getSubstatValues()[i]));
+						}
 					}
 				} else if(randomInteger == 3) {
 					//Goblet
@@ -263,8 +271,10 @@ public class MainWindow {
 					mainStatNameLabel.setText(currentGobletPiece.getMainStatName());
 					mainStatValueLabel.setText(String.valueOf(currentGobletPiece.getMainStatValue()));
 					for(int i = 0; i < 4; i++) {
-						substatNameLabelList[i].setText(currentGobletPiece.getSubstatNames()[i]);
-						substatValueLabelList[i].setText(String.valueOf(currentGobletPiece.getSubstatValues()[i]));
+						if(currentGobletPiece.getSubstatNames()[i] != null) {
+							substatNameLabelList[i].setText(currentGobletPiece.getSubstatNames()[i]);
+							substatValueLabelList[i].setText(String.valueOf(currentGobletPiece.getSubstatValues()[i]));
+						}
 					}
 				} else {
 					//Circlet
@@ -274,8 +284,10 @@ public class MainWindow {
 					mainStatNameLabel.setText(currentCircletPiece.getMainStatName());
 					mainStatValueLabel.setText(String.valueOf(currentCircletPiece.getMainStatValue()));
 					for(int i = 0; i < 4; i++) {
-						substatNameLabelList[i].setText(currentCircletPiece.getSubstatNames()[i]);
-						substatValueLabelList[i].setText(String.valueOf(currentCircletPiece.getSubstatValues()[i]));
+						if(currentCircletPiece.getSubstatNames()[i] != null) {
+							substatNameLabelList[i].setText(currentCircletPiece.getSubstatNames()[i]);
+							substatValueLabelList[i].setText(String.valueOf(currentCircletPiece.getSubstatValues()[i]));
+						}
 					}
 				}
 				
@@ -287,7 +299,7 @@ public class MainWindow {
 		UpgradeToNextRankButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Calls the upgrade artifact functions.
-				UpgradeArtifact(currentLevelValueLabel, mainStatValueLabel, substatValueLabelList, substatUpgradedByList);
+				UpgradeArtifact(currentLevelValueLabel, mainStatValueLabel, substatNameLabelList, substatValueLabelList, substatUpgradedByList);
 				//If the artifact level is +20, disable the button.
 				if(currentLevelValueLabel.getText().compareTo("+20") == 0) {
 					UpgradeToNextRankButton.setEnabled(false);
@@ -296,7 +308,7 @@ public class MainWindow {
 		});
 	}
 	
-	public void UpgradeArtifact(JLabel currentLevelValueLabel, JLabel mainStatValueLabel, JLabel[] substatValueLabelList, JLabel[] substatUpgradedByList) {
+	public void UpgradeArtifact(JLabel currentLevelValueLabel, JLabel mainStatValueLabel, JLabel[] substatNameLabelList, JLabel[] substatValueLabelList, JLabel[] substatUpgradedByList) {
 		//Reset substat upgraded by how much labels
 		for(int i = 0; i < substatUpgradedByList.length; i++) {
 			substatUpgradedByList[i].setText("");
@@ -308,61 +320,137 @@ public class MainWindow {
 		
 		//If artifact is a flower piece
 		if(currentFlowerPiece != null) {
-			//Get original substat value
-			double originalValue = currentFlowerPiece.getSubstatValues()[index];
-			//level up the artifact by one rank
-			currentFlowerPiece.levelFlowerPiece(index);
-			//Find out how much the stat increased by
-			double howMuchUpgradedBy = Math.round((currentFlowerPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
-			//Update the current level label
-			currentLevelValueLabel.setText("+" + String.valueOf(currentFlowerPiece.getCurrentLevel()));
-			//Update main stat label
-			mainStatValueLabel.setText(String.valueOf(currentFlowerPiece.getMainStatValue()));
-			//update sub stat value label.
-			substatValueLabelList[index].setText(String.valueOf(currentFlowerPiece.getSubstatValues()[index]));
-			//update sub stat upgraded by how much label and make it visible
-			substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
-			substatUpgradedByList[index].setVisible(true);
+			//If there are 4 substats, upgrade one of them and update the labels.
+			if(currentFlowerPiece.getSubstatNames()[3] != null) {
+				//Get original substat value
+				double originalValue = currentFlowerPiece.getSubstatValues()[index];
+				//level up the artifact by one rank
+				currentFlowerPiece.levelFlowerPiece(index);
+				//Find out how much the stat increased by
+				double howMuchUpgradedBy = Math.round((currentFlowerPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentFlowerPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentFlowerPiece.getMainStatValue()));
+				//update sub stat value label.
+				substatValueLabelList[index].setText(String.valueOf(currentFlowerPiece.getSubstatValues()[index]));
+				//update sub stat upgraded by how much label and make it visible
+				substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
+				substatUpgradedByList[index].setVisible(true);
+			//if there is only 3 sub stats, add another one and update the labels.
+			} else {
+				//level up the artifact by one rank
+				currentFlowerPiece.levelFlowerPiece(index);
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentFlowerPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentFlowerPiece.getMainStatValue()));
+				//update sub stat name label.
+				substatNameLabelList[3].setText(currentFlowerPiece.getSubstatNames()[3]);
+				//update sub stat value label.
+				substatValueLabelList[3].setText(String.valueOf(currentFlowerPiece.getSubstatValues()[3]));
+			}
+			
 		//Feather piece
 		} else if(currentFeatherPiece != null) {
-			double originalValue = currentFeatherPiece.getSubstatValues()[index];
-			currentFeatherPiece.levelFeatherPiece(index);
-			double howMuchUpgradedBy = Math.round((currentFeatherPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
-			currentLevelValueLabel.setText("+" + String.valueOf(currentFeatherPiece.getCurrentLevel()));
-			mainStatValueLabel.setText(String.valueOf(currentFeatherPiece.getMainStatValue()));
-			substatValueLabelList[index].setText(String.valueOf(currentFeatherPiece.getSubstatValues()[index]));
-			substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
-			substatUpgradedByList[index].setVisible(true);
+			//If there are 4 substats, upgrade one of them and update the labels.
+			if(currentFeatherPiece.getSubstatNames()[3] != null) {
+				double originalValue = currentFeatherPiece.getSubstatValues()[index];
+				currentFeatherPiece.levelFeatherPiece(index);
+				double howMuchUpgradedBy = Math.round((currentFeatherPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
+				currentLevelValueLabel.setText("+" + String.valueOf(currentFeatherPiece.getCurrentLevel()));
+				mainStatValueLabel.setText(String.valueOf(currentFeatherPiece.getMainStatValue()));
+				substatValueLabelList[index].setText(String.valueOf(currentFeatherPiece.getSubstatValues()[index]));
+				substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
+				substatUpgradedByList[index].setVisible(true);
+			//if there is only 3 sub stats, add another one and update the labels.
+			} else {
+				//level up the artifact by one rank
+				currentFeatherPiece.levelFeatherPiece(index);
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentFeatherPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentFeatherPiece.getMainStatValue()));
+				//update sub stat name label.
+				substatNameLabelList[3].setText(currentFeatherPiece.getSubstatNames()[3]);
+				//update sub stat value label.
+				substatValueLabelList[3].setText(String.valueOf(currentFeatherPiece.getSubstatValues()[3]));
+			}
 		//Sand piece
 		} else if(currentSandPiece != null) {
-			double originalValue = currentSandPiece.getSubstatValues()[index];
-			currentSandPiece.levelSandPiece(index);
-			double howMuchUpgradedBy = Math.round((currentSandPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
-			currentLevelValueLabel.setText("+" + String.valueOf(currentSandPiece.getCurrentLevel()));
-			mainStatValueLabel.setText(String.valueOf(currentSandPiece.getMainStatValue()));
-			substatValueLabelList[index].setText(String.valueOf(currentSandPiece.getSubstatValues()[index]));
-			substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
-			substatUpgradedByList[index].setVisible(true);
+			//If there are 4 substats, upgrade one of them and update the labels.
+			if(currentSandPiece.getSubstatNames()[3] != null) {
+				double originalValue = currentSandPiece.getSubstatValues()[index];
+				currentSandPiece.levelSandPiece(index);
+				double howMuchUpgradedBy = Math.round((currentSandPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
+				currentLevelValueLabel.setText("+" + String.valueOf(currentSandPiece.getCurrentLevel()));
+				mainStatValueLabel.setText(String.valueOf(currentSandPiece.getMainStatValue()));
+				substatValueLabelList[index].setText(String.valueOf(currentSandPiece.getSubstatValues()[index]));
+				substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
+				substatUpgradedByList[index].setVisible(true);
+			//if there is only 3 sub stats, add another one and update the labels.
+			} else {
+				//level up the artifact by one rank
+				currentSandPiece.levelSandPiece(index);
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentSandPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentSandPiece.getMainStatValue()));
+				//update sub stat name label.
+				substatNameLabelList[3].setText(currentSandPiece.getSubstatNames()[3]);
+				//update sub stat value label.
+				substatValueLabelList[3].setText(String.valueOf(currentSandPiece.getSubstatValues()[3]));
+			}
 		//Goblet piece
 		} else if(currentGobletPiece != null) {
-			double originalValue = currentGobletPiece.getSubstatValues()[index];
-			currentGobletPiece.levelGobletPiece(index);
-			double howMuchUpgradedBy = Math.round((currentGobletPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
-			currentLevelValueLabel.setText("+" + String.valueOf(currentGobletPiece.getCurrentLevel()));
-			mainStatValueLabel.setText(String.valueOf(currentGobletPiece.getMainStatValue()));
-			substatValueLabelList[index].setText(String.valueOf(currentGobletPiece.getSubstatValues()[index]));
-			substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
-			substatUpgradedByList[index].setVisible(true);
+			//If there are 4 substats, upgrade one of them and update the labels.
+			if(currentGobletPiece.getSubstatNames()[3] != null) {
+				double originalValue = currentGobletPiece.getSubstatValues()[index];
+				currentGobletPiece.levelGobletPiece(index);
+				double howMuchUpgradedBy = Math.round((currentGobletPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
+				currentLevelValueLabel.setText("+" + String.valueOf(currentGobletPiece.getCurrentLevel()));
+				mainStatValueLabel.setText(String.valueOf(currentGobletPiece.getMainStatValue()));
+				substatValueLabelList[index].setText(String.valueOf(currentGobletPiece.getSubstatValues()[index]));
+				substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
+				substatUpgradedByList[index].setVisible(true);
+			//if there is only 3 sub stats, add another one and update the labels.
+			} else {
+				//level up the artifact by one rank
+				currentGobletPiece.levelGobletPiece(index);
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentGobletPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentGobletPiece.getMainStatValue()));
+				//update sub stat name label.
+				substatNameLabelList[3].setText(currentGobletPiece.getSubstatNames()[3]);
+				//update sub stat value label.
+				substatValueLabelList[3].setText(String.valueOf(currentGobletPiece.getSubstatValues()[3]));
+			}
 		//Circlet piece
 		} else {
-			double originalValue = currentCircletPiece.getSubstatValues()[index];
-			currentCircletPiece.levelCircletPiece(index);
-			double howMuchUpgradedBy = Math.round((currentCircletPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
-			currentLevelValueLabel.setText("+" + String.valueOf(currentCircletPiece.getCurrentLevel()));
-			mainStatValueLabel.setText(String.valueOf(currentCircletPiece.getMainStatValue()));
-			substatValueLabelList[index].setText(String.valueOf(currentCircletPiece.getSubstatValues()[index]));
-			substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
-			substatUpgradedByList[index].setVisible(true);
+			//If there are 4 substats, upgrade one of them and update the labels.
+			if(currentCircletPiece.getSubstatNames()[3] != null) {
+				double originalValue = currentCircletPiece.getSubstatValues()[index];
+				currentCircletPiece.levelCircletPiece(index);
+				double howMuchUpgradedBy = Math.round((currentCircletPiece.getSubstatValues()[index] - originalValue) * 10) / 10.0;
+				currentLevelValueLabel.setText("+" + String.valueOf(currentCircletPiece.getCurrentLevel()));
+				mainStatValueLabel.setText(String.valueOf(currentCircletPiece.getMainStatValue()));
+				substatValueLabelList[index].setText(String.valueOf(currentCircletPiece.getSubstatValues()[index]));
+				substatUpgradedByList[index].setText("+" + String.valueOf(howMuchUpgradedBy));
+				substatUpgradedByList[index].setVisible(true);
+			//if there is only 3 sub stats, add another one and update the labels.
+			} else {
+				//level up the artifact by one rank
+				currentCircletPiece.levelCircletPiece(index);
+				//Update the current level label
+				currentLevelValueLabel.setText("+" + String.valueOf(currentCircletPiece.getCurrentLevel()));
+				//Update main stat label
+				mainStatValueLabel.setText(String.valueOf(currentCircletPiece.getMainStatValue()));
+				//update sub stat name label.
+				substatNameLabelList[3].setText(currentCircletPiece.getSubstatNames()[3]);
+				//update sub stat value label.
+				substatValueLabelList[3].setText(String.valueOf(currentCircletPiece.getSubstatValues()[3]));
+			}
 		}
 	}
 }
